@@ -2202,3 +2202,447 @@
   }
 }
 
+
+
+/* =========================================================
+   FINAL FIX — ORDERS PAGE
+   Menggunakan class yang benar-benar dipakai oleh orders.tsx
+   ========================================================= */
+
+/* Pastikan ukuran elemen dihitung konsisten */
+.dashboard .dash-orders-page,
+.dashboard .dash-orders-page * {
+  box-sizing: border-box;
+}
+
+.dashboard .dash-orders-page {
+  width: 100%;
+  max-width: 1280px;
+  min-width: 0;
+  margin-inline: auto;
+}
+
+/* Filter panel: class JSX adalah dash-orders-filter-panel */
+.dashboard .dash-orders-filter-panel {
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 18px;
+}
+
+/* Lima filter dalam grid agar lebar kontrol stabil */
+.dashboard .dash-orders-page .dash-filters {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.55fr) repeat(4, minmax(145px, 1fr));
+  align-items: end;
+  gap: 14px;
+  width: 100%;
+  margin: 0 0 18px;
+}
+
+.dashboard .dash-orders-page .dash-filters label {
+  display: grid;
+  min-width: 0;
+  gap: 7px;
+  color: var(--ink);
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+.dashboard .dash-orders-page .dash-filters input,
+.dashboard .dash-orders-page .dash-filters select {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  background: var(--white);
+  color: var(--ink);
+  font: 400 16px/1.4 var(--text);
+}
+
+/* Status tabs */
+.dashboard .dash-orders-page .dash-order-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin: 0;
+}
+
+.dashboard .dash-orders-page .dash-order-tabs button {
+  min-height: 40px;
+  padding: 8px 14px;
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  background: var(--white);
+  color: var(--ink);
+  font: 600 14px/1.35 var(--text);
+  white-space: nowrap;
+}
+
+.dashboard .dash-orders-page .dash-order-tabs button.is-active {
+  background: var(--ivory);
+  border-color: #e7c98c;
+}
+
+.dashboard .dash-orders-page .dash-order-tabs button span {
+  font-variant-numeric: tabular-nums;
+}
+
+/* IMPORTANT:
+   JSX menggunakan dash-orders-table-wrap, bukan dash-table-wrap.
+   Wrapper inilah yang menjaga tabel tetap berada dalam batasnya. */
+.dashboard .dash-orders-page .dash-orders-table-wrap {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  background: var(--white);
+  scrollbar-width: thin;
+}
+
+/* Enam kolom: Pesanan, Menu, Pickup, Status, Total, Aksi.
+   Persentase tepat 100%, termasuk kolom Aksi. */
+.dashboard .dash-orders-page .dash-orders-table {
+  width: 100%;
+  min-width: 980px;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--white);
+  text-align: left;
+}
+
+/* Kolom ditentukan pada header dan body agar selalu sinkron */
+.dashboard .dash-orders-page .dash-orders-table th:nth-child(1),
+.dashboard .dash-orders-page .dash-orders-table td:nth-child(1) { width: 21%; }
+
+.dashboard .dash-orders-page .dash-orders-table th:nth-child(2),
+.dashboard .dash-orders-page .dash-orders-table td:nth-child(2) { width: 15%; }
+
+.dashboard .dash-orders-page .dash-orders-table th:nth-child(3),
+.dashboard .dash-orders-page .dash-orders-table td:nth-child(3) { width: 14%; }
+
+.dashboard .dash-orders-page .dash-orders-table th:nth-child(4),
+.dashboard .dash-orders-page .dash-orders-table td:nth-child(4) { width: 24%; }
+
+.dashboard .dash-orders-page .dash-orders-table th:nth-child(5),
+.dashboard .dash-orders-page .dash-orders-table td:nth-child(5) { width: 13%; }
+
+.dashboard .dash-orders-page .dash-orders-table th:nth-child(6),
+.dashboard .dash-orders-page .dash-orders-table td:nth-child(6) { width: 13%; }
+
+.dashboard .dash-orders-page .dash-orders-table th {
+  padding: 13px 12px;
+  background: #1d1b1b;
+  color: #fff;
+  border-bottom: 1px solid var(--hairline);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.025em;
+  text-transform: uppercase;
+  vertical-align: middle;
+  overflow-wrap: normal;
+}
+
+.dashboard .dash-orders-page .dash-orders-table td {
+  padding: 15px 12px;
+  color: var(--ink);
+  border-bottom: 1px solid var(--hairline);
+  font-size: 14px;
+  line-height: 1.5;
+  vertical-align: middle;
+  overflow-wrap: anywhere;
+}
+
+.dashboard .dash-orders-page .dash-orders-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Order number and customer */
+.dashboard .dash-orders-page .dash-orders-table .dash-order-link {
+  display: inline;
+  color: var(--ink);
+  font-size: 13px;
+  line-height: 1.45;
+  font-weight: 700;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.dashboard .dash-orders-page .dash-orders-table .dash-orders-customer {
+  display: inline;
+  font-size: 13px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.dashboard .dash-orders-page .dash-orders-table small {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+/* Menu items */
+.dashboard .dash-orders-page .dash-orders-table .dash-line {
+  display: block;
+  font-size: 13px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+/* Pickup time */
+.dashboard .dash-orders-page .dash-orders-pickup {
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.dashboard .dash-orders-page .dash-orders-pickup strong {
+  font-size: 14px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.dashboard .dash-orders-page .dash-orders-pickup span {
+  font-size: 12px;
+}
+
+/* Statuses */
+.dashboard .dash-orders-page .dash-orders-statuses {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+
+.dashboard .dash-orders-page .dash-orders-table .dash-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  margin: 0 3px 4px 0;
+  padding: 5px 9px;
+  border: 0;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+/* Total stays inside its own column */
+.dashboard .dash-orders-page .dash-orders-table th.numeric,
+.dashboard .dash-orders-page .dash-orders-table td.numeric {
+  padding-left: 8px;
+  padding-right: 12px;
+  text-align: right;
+  white-space: nowrap;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: normal;
+}
+
+/* Action column is a real sixth column, not content outside the table */
+.dashboard .dash-orders-page .dash-orders-table th.dash-orders-action-heading,
+.dashboard .dash-orders-page .dash-orders-table td.dash-orders-action-cell {
+  padding-left: 10px;
+  padding-right: 12px;
+  text-align: center;
+}
+
+.dashboard .dash-orders-page .dash-orders-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 132px;
+  min-height: 36px;
+  padding: 7px 9px;
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  color: var(--ink);
+  background: var(--white);
+  font: 600 12px/1.35 var(--text);
+  text-align: center;
+  text-decoration: none;
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.dashboard .dash-orders-page .dash-orders-action:hover {
+  text-decoration: none;
+  background: var(--ivory);
+}
+
+.dashboard .dash-orders-page .dash-orders-action.is-yellow {
+  background: var(--bee);
+  border-color: var(--bee);
+  color: var(--ink);
+}
+
+.dashboard .dash-orders-page .dash-orders-action.is-dark {
+  background: #1d1b1b;
+  border-color: #1d1b1b;
+  color: #fff;
+}
+
+.dashboard .dash-orders-page .dash-orders-action.is-outline {
+  background: var(--white);
+  border-color: var(--hairline);
+  color: var(--ink);
+}
+
+/* Pagination typography */
+.dashboard .dash-orders-page .dash-pagination {
+  margin-top: 18px;
+  font-size: 13px;
+}
+
+/* Tablet: filters wrap into two columns; table scrolls inside wrapper */
+@media (max-width: 1100px) {
+  .dashboard .dash-orders-page .dash-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard .dash-orders-page .dash-filters label:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .dashboard .dash-orders-page .dash-heading {
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .dashboard .dash-orders-page .dash-filters {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .dashboard .dash-orders-page .dash-filters label:first-child {
+    grid-column: auto;
+  }
+
+  .dashboard .dash-orders-page .dash-order-tabs {
+    gap: 6px;
+  }
+
+  .dashboard .dash-orders-page .dash-order-tabs button {
+    min-height: 38px;
+    padding: 7px 10px;
+    font-size: 13px;
+  }
+
+  .dashboard .dash-orders-page .dash-orders-table {
+    min-width: 980px;
+  }
+
+  .dashboard .dash-orders-page .dash-pagination {
+    flex-wrap: wrap;
+  }
+}
+
+
+
+/* =========================================================
+   REFINEMENT — SPACING BETWEEN TOTAL AND ACTION COLUMNS
+   ========================================================= */
+
+/* Give Total and Action a little more room, while keeping
+   the six columns at exactly 100% of the table width. */
+.dashboard .dash-orders-page .dash-orders-table th:nth-child(1),
+.dashboard .dash-orders-page .dash-orders-table td:nth-child(1) { width: 21%; }
+
+.dashboard .dash-orders-page .dash-orders-table th:nth-child(2),
+.dashboard .dash-orders-page .dash-orders-table td:nth-child(2) { width: 14%; }
+
+.dashboard .dash-orders-page .dash-orders-table th:nth-child(3),
+.dashboard .dash-orders-page .dash-orders-table td:nth-child(3) { width: 13%; }
+
+.dashboard .dash-orders-page .dash-orders-table th:nth-child(4),
+.dashboard .dash-orders-page .dash-orders-table td:nth-child(4) { width: 22%; }
+
+.dashboard .dash-orders-page .dash-orders-table th:nth-child(5),
+.dashboard .dash-orders-page .dash-orders-table td:nth-child(5) { width: 15%; }
+
+.dashboard .dash-orders-page .dash-orders-table th:nth-child(6),
+.dashboard .dash-orders-page .dash-orders-table td:nth-child(6) { width: 15%; }
+
+/* Increase the visual breathing room between the two columns.
+   Total remains right-aligned; Action remains centered. */
+.dashboard .dash-orders-page .dash-orders-table th:nth-child(5),
+.dashboard .dash-orders-page .dash-orders-table td:nth-child(5) {
+  padding-left: 16px;
+  padding-right: 26px;
+}
+
+.dashboard .dash-orders-page .dash-orders-table th:nth-child(6),
+.dashboard .dash-orders-page .dash-orders-table td:nth-child(6) {
+  padding-left: 26px;
+  padding-right: 16px;
+  text-align: center;
+}
+
+/* Keep action controls comfortably sized without touching
+   the table's right boundary. */
+.dashboard .dash-orders-page .dash-orders-table .dash-orders-action {
+  width: 100%;
+  max-width: 132px;
+  margin-inline: auto;
+}
+
+
+
+/* =========================================================
+   FINAL SPACING FIX — TOTAL vs ACTION
+   Root cause: .numeric applies text-align:right, pushing
+   the total amount toward the Action column.
+   ========================================================= */
+
+/* Override the generic numeric alignment only for the
+   fifth column (Total). Keep a consistent left inset. */
+.dashboard .dash-orders-page .dash-orders-table th:nth-child(5),
+.dashboard .dash-orders-page .dash-orders-table td:nth-child(5),
+.dashboard .dash-orders-page .dash-orders-table th.numeric:nth-child(5),
+.dashboard .dash-orders-page .dash-orders-table td.numeric:nth-child(5) {
+  text-align: left !important;
+  padding-left: 28px !important;
+  padding-right: 12px !important;
+  white-space: nowrap;
+}
+
+/* Keep Action in its own visual area and centered. */
+.dashboard .dash-orders-page .dash-orders-table th:nth-child(6),
+.dashboard .dash-orders-page .dash-orders-table td:nth-child(6),
+.dashboard .dash-orders-page .dash-orders-table th.dash-orders-action-heading,
+.dashboard .dash-orders-page .dash-orders-table td.dash-orders-action-cell {
+  text-align: center !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+}
+
+/* Do not stretch the button to the cell edges. */
+.dashboard .dash-orders-page .dash-orders-table td:nth-child(6) .dash-orders-action,
+.dashboard .dash-orders-page .dash-orders-table td.dash-orders-action-cell .dash-orders-action {
+  display: flex;
+  width: 100%;
+  max-width: 132px;
+  margin-inline: auto;
+}
