@@ -1,11 +1,24 @@
+
 import { dashboardConfig } from '@/lib/dashboard/config';
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+
 export async function proxy(request: NextRequest) {
   const configuration = dashboardConfig();
-  if (!configuration) return NextResponse.next();
+
+  if (!configuration) {
+    return NextResponse.next();
+  }
+
+  // Development bypass: lewati autentikasi Supabase
+  if (configuration.bypass) {
+    return NextResponse.next();
+  }
+
   const { url, key } = configuration;
+
   let response = NextResponse.next({ request });
+
   const client = createServerClient(url, key, {
     cookieOptions: {
       httpOnly: true,
@@ -16,18 +29,26 @@ export async function proxy(request: NextRequest) {
     cookies: {
       getAll: () => request.cookies.getAll(),
       setAll: (values) => {
-        values.forEach(({ name, value }) => request.cookies.set(name, value));
+        values.forEach(({ name, value }) =>
+          request.cookies.set(name, value)
+        );
+
         response = NextResponse.next({ request });
+
         values.forEach(({ name, value, options }) =>
-          response.cookies.set(name, value, options),
+          response.cookies.set(name, value, options)
         );
       },
     },
   });
+
   await client.auth.getUser().catch(() => null);
+
   response.headers.set('cache-control', 'private, no-store');
+
   return response;
 }
+
 export const config = {
   matcher: [
     '/dashboard/:path*',
