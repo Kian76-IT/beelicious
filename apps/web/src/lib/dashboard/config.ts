@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 const origin = z.url().refine((value) => {
   const url = new URL(value);
+
   return (
     !url.username &&
     !url.password &&
@@ -18,20 +19,6 @@ const origin = z.url().refine((value) => {
 export function dashboardConfig(
   env: Record<string, string | undefined> = process.env,
 ) {
-  // Development bypass: tidak memerlukan Supabase
-  if (
-    env.NODE_ENV === 'development' &&
-    env.DASHBOARD_BYPASS === 'true'
-  ) {
-    return {
-      url: '',
-      key: '',
-      apiUrl: 'http://127.0.0.1:3000',
-      siteUrl: 'http://127.0.0.1:3001',
-      bypass: true,
-    };
-  }
-
   if (env.DASHBOARD_ENABLED !== 'true') return null;
 
   const result = z
@@ -52,6 +39,5 @@ export function dashboardConfig(
     key: result.data.SUPABASE_PUBLISHABLE_KEY,
     apiUrl: result.data.DASHBOARD_API_URL,
     siteUrl: result.data.DASHBOARD_SITE_URL,
-    bypass: false,
   };
 }

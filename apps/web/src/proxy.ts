@@ -10,11 +10,6 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Development bypass: lewati autentikasi Supabase
-  if (configuration.bypass) {
-    return NextResponse.next();
-  }
-
   const { url, key } = configuration;
 
   let response = NextResponse.next({ request });
@@ -30,13 +25,13 @@ export async function proxy(request: NextRequest) {
       getAll: () => request.cookies.getAll(),
       setAll: (values) => {
         values.forEach(({ name, value }) =>
-          request.cookies.set(name, value)
+          request.cookies.set(name, value),
         );
 
         response = NextResponse.next({ request });
 
         values.forEach(({ name, value, options }) =>
-          response.cookies.set(name, value, options)
+          response.cookies.set(name, value, options),
         );
       },
     },

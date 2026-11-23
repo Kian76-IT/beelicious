@@ -1,4 +1,3 @@
-
 'use client';
 
 import {
@@ -87,29 +86,12 @@ export async function dashboardApi<T>(
 }
 
 // ============================================
-// MOCK MEMBERSHIP
-// ============================================
-
-// Data tenant sementara untuk development.
-// Tidak menggunakan database maupun Supabase.
-
-const mockMembership = {
-  tenantId: '00000000-0000-4000-8000-000000000001',
-  role: 'OWNER',
-  tenant: {
-    name: 'Beelicious Demo Tenant',
-    isActive: true,
-  },
-} as unknown as Membership;
-
-// ============================================
 // WORKSPACE CONTEXT
 // ============================================
 
 const Workspace = createContext<{
   tenant: string;
   membership: Membership;
-  bypass:boolean;
 } | null>(null);
 
 export function useWorkspace() {
@@ -124,239 +106,8 @@ export function useWorkspace() {
 
 
 // ============================================
-// DEVELOPMENT MOCK DATA
-// ============================================
-
-function getMockDashboardData<T>(name: string, path: string): T {
-  const now = new Date();
-
-  const dateAfter = (days: number, hour: number) => {
-    const date = new Date(now);
-    date.setDate(date.getDate() + days);
-    date.setHours(hour, 0, 0, 0);
-    return date.toISOString();
-  };
-
-  if (name === 'menu') {
-    const categories = [
-      {
-        id: 'cat-001',
-        name: 'Makanan',
-        sortOrder: 1,
-        isActive: true,
-        updatedAt: now.toISOString(),
-      },
-      {
-        id: 'cat-002',
-        name: 'Minuman',
-        sortOrder: 2,
-        isActive: true,
-        updatedAt: now.toISOString(),
-      },
-      {
-        id: 'cat-003',
-        name: 'Dessert',
-        sortOrder: 3,
-        isActive: true,
-        updatedAt: now.toISOString(),
-      },
-    ];
-
-    const items = [
-      {
-        id: 'menu-001',
-        categoryId: 'cat-001',
-        name: 'Nasi Ayam Teriyaki',
-        description: 'Nasi dengan ayam teriyaki dan sayuran.',
-        price: 25000,
-        imageUrl: null,
-        sortOrder: 1,
-        isAvailable: true,
-        updatedAt: now.toISOString(),
-      },
-      {
-        id: 'menu-002',
-        categoryId: 'cat-001',
-        name: 'Chicken Katsu',
-        description: 'Ayam katsu dengan nasi dan saus spesial.',
-        price: 28000,
-        imageUrl: null,
-        sortOrder: 2,
-        isAvailable: true,
-        updatedAt: now.toISOString(),
-      },
-      {
-        id: 'menu-003',
-        categoryId: 'cat-001',
-        name: 'Nasi Goreng Spesial',
-        description: 'Nasi goreng dengan telur dan topping.',
-        price: 22000,
-        imageUrl: null,
-        sortOrder: 3,
-        isAvailable: false,
-        updatedAt: now.toISOString(),
-      },
-      {
-        id: 'menu-004',
-        categoryId: 'cat-002',
-        name: 'Es Teh Manis',
-        description: 'Teh segar dengan es.',
-        price: 6000,
-        imageUrl: null,
-        sortOrder: 4,
-        isAvailable: true,
-        updatedAt: now.toISOString(),
-      },
-      {
-        id: 'menu-005',
-        categoryId: 'cat-002',
-        name: 'Kopi Susu',
-        description: 'Kopi susu dengan rasa creamy.',
-        price: 15000,
-        imageUrl: null,
-        sortOrder: 5,
-        isAvailable: true,
-        updatedAt: now.toISOString(),
-      },
-      {
-        id: 'menu-006',
-        categoryId: 'cat-003',
-        name: 'Chocolate Cake',
-        description: 'Kue cokelat lembut.',
-        price: 18000,
-        imageUrl: null,
-        sortOrder: 6,
-        isAvailable: true,
-        updatedAt: now.toISOString(),
-      },
-    ];
-
-    const params = new URLSearchParams(path.split('?')[1] ?? '');
-    const search = (params.get('search') ?? '').toLowerCase();
-    const categoryId = params.get('categoryId') ?? '';
-    const page = Math.max(1, Number(params.get('page') ?? 1));
-    const pageSize = 25;
-
-    const filtered = items.filter((item) => {
-      const matchesSearch =
-        item.name.toLowerCase().includes(search) ||
-        (item.description ?? '').toLowerCase().includes(search);
-
-      const matchesCategory =
-        !categoryId || item.categoryId === categoryId;
-
-      return matchesSearch && matchesCategory;
-    });
-
-    return {
-      items: filtered.slice((page - 1) * pageSize, page * pageSize),
-      categories,
-      total: filtered.length,
-    } as T;
-  }
-
-  if (name === 'pickup') {
-    const items = [
-      {
-        id: 'pickup-001',
-        startsAt: dateAfter(1, 10),
-        endsAt: dateAfter(1, 11),
-        capacity: 10,
-        confirmed: 4,
-        held: 2,
-        remaining: 4,
-        isAvailable: true,
-        updatedAt: now.toISOString(),
-      },
-      {
-        id: 'pickup-002',
-        startsAt: dateAfter(1, 11),
-        endsAt: dateAfter(1, 12),
-        capacity: 12,
-        confirmed: 5,
-        held: 1,
-        remaining: 6,
-        isAvailable: true,
-        updatedAt: now.toISOString(),
-      },
-      {
-        id: 'pickup-003',
-        startsAt: dateAfter(1, 13),
-        endsAt: dateAfter(1, 14),
-        capacity: 10,
-        confirmed: 3,
-        held: 0,
-        remaining: 7,
-        isAvailable: false,
-        updatedAt: now.toISOString(),
-      },
-    ];
-
-    const hours = [
-      { dayOfWeek: 0, opensAt: 480, closesAt: 1020, isClosed: true },
-      { dayOfWeek: 1, opensAt: 480, closesAt: 1020, isClosed: false },
-      { dayOfWeek: 2, opensAt: 480, closesAt: 1020, isClosed: false },
-      { dayOfWeek: 3, opensAt: 480, closesAt: 1020, isClosed: false },
-      { dayOfWeek: 4, opensAt: 480, closesAt: 1020, isClosed: false },
-      { dayOfWeek: 5, opensAt: 480, closesAt: 1020, isClosed: false },
-      { dayOfWeek: 6, opensAt: 480, closesAt: 1020, isClosed: false },
-    ].map((hour) => ({
-      ...hour,
-      id: `hours-${hour.dayOfWeek}`,
-      updatedAt: now.toISOString(),
-    }));
-
-    const params = new URLSearchParams(path.split('?')[1] ?? '');
-    const page = Math.max(1, Number(params.get('page') ?? 1));
-    const pageSize = 25;
-
-    return {
-      items: items.slice((page - 1) * pageSize, page * pageSize),
-      hours,
-      total: items.length,
-    } as T;
-  }
-
-  throw new Error(`Mock data belum tersedia untuk halaman: ${name}`);
-}
-
-// ============================================
 // DASHBOARD QUERY
 // ============================================
-
-
-// export function useDashboardQuery<T>(
-//   name: string,
-//   path: string,
-//   poll = false,
-//   enabled = true,
-// ) {
-//   const { tenant } = useWorkspace();
-
-//   return useQuery({
-//     queryKey: ['dashboard', tenant, name, path],
-
-//     queryFn: ({ signal }) =>
-//       dashboardApi<T>(path, tenant, { signal }),
-
-//     enabled,
-
-//     ...(poll
-//       ? {
-//           refetchInterval: 8000,
-//           refetchIntervalInBackground: false,
-//         }
-//       : {}),
-
-//     staleTime: 2000,
-
-//     retry: (count, error) =>
-//       !(
-//         error instanceof ApiError &&
-//         [401, 403, 404].includes(error.status)
-//       ) && count < 1,
-//   });
-// }
 
 export function useDashboardQuery<T>(
   name: string,
@@ -364,24 +115,19 @@ export function useDashboardQuery<T>(
   poll = false,
   enabled = true,
 ) {
-  const { tenant, bypass } = useWorkspace();
+  const { tenant } = useWorkspace();
 
   return useQuery({
     queryKey: ['dashboard', tenant, name, path],
 
-    queryFn: ({ signal }) => {
-      if (bypass && (name === 'menu' || name === 'pickup')) {
-        return Promise.resolve(getMockDashboardData<T>(name, path));
-      }
-
-      return dashboardApi<T>(path, tenant, { signal });
-    },
+    queryFn: ({ signal }) =>
+      dashboardApi<T>(path, tenant, { signal }),
 
     enabled,
 
     ...(poll
       ? {
-          refetchInterval: bypass ? false : 8000,
+          refetchInterval: 8000,
           refetchIntervalInBackground: false,
         }
       : {}),
@@ -396,7 +142,6 @@ export function useDashboardQuery<T>(
   });
 }
 
-
 // ============================================
 // WORKSPACE PROVIDER
 // ============================================
@@ -404,17 +149,15 @@ export function useDashboardQuery<T>(
 export function WorkspaceProvider({
   children,
   account,
-  bypass = false,
 }: {
   children: ReactNode;
   account: string;
-  bypass?: boolean;
 }) {
   const [client] = useState(() => new QueryClient());
 
   return (
     <QueryClientProvider client={client}>
-      <Shell account={account} bypass={bypass}>
+      <Shell account={account}>
         {children}
       </Shell>
     </QueryClientProvider>
@@ -428,13 +171,11 @@ export function WorkspaceProvider({
 function Shell({
   children,
   account,
-  bypass,
 }: {
   children: ReactNode;
   account: string;
-  bypass: boolean;
 }) {
-  // Ambil data membership hanya jika bypass tidak aktif.
+  // Ambil data membership dari API berdasarkan session pengguna.
   const query = useQuery({
     queryKey: ['memberships'],
 
@@ -443,18 +184,13 @@ function Shell({
         signal,
       }),
 
-    enabled: !bypass,
-
     retry: false,
 
     refetchInterval: 30000,
     refetchIntervalInBackground: false,
   });
 
-  // Gunakan mock membership ketika development bypass aktif.
-  const memberships = bypass
-    ? [mockMembership]
-    : query.data;
+  const memberships = query.data;
 
   const [selected, setSelected] = useState('');
   const [open, setOpen] = useState(false);
@@ -471,17 +207,16 @@ function Shell({
   // Redirect ke login jika session tidak valid.
   useEffect(() => {
     if (
-      !bypass &&
       query.error instanceof ApiError &&
       query.error.status === 401
     ) {
       client.clear();
       router.replace('/login');
     }
-  }, [bypass, query.error, client, router]);
+  }, [query.error, client, router]);
 
   // Loading membership.
-  if (!bypass && query.isPending) {
+  if (query.isPending) {
     return (
       <main id="main" className="dashboard dash-loading">
         <p role="status">Memuat ruang tenant…</p>
@@ -490,7 +225,7 @@ function Shell({
   }
 
   // Membership error.
-  if (!bypass && query.error) {
+  if (query.error) {
     return (
       <main id="main" className="dashboard dash-loading">
         <h1>Akses belum tersedia</h1>
@@ -558,7 +293,6 @@ function Shell({
       value={{
         tenant: member.tenantId,
         membership: member,
-        bypass,
       }}
     >
       <div className="dashboard dash-shell">
@@ -682,7 +416,7 @@ function Shell({
           {/* ACCOUNT */}
 
           <div className="dash-account">
-            {bypass ? <span className="dash-env-badge">Development Tenant</span> : <span>{account}</span>}
+            <span>{account}</span>
 
             <Link href="/dashboard/password">
               Ganti kata sandi

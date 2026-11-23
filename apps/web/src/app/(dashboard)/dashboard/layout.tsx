@@ -1,7 +1,5 @@
-
 import { redirect } from 'next/navigation';
 import { authClient } from '@/lib/dashboard/auth';
-import { dashboardConfig } from '@/lib/dashboard/config';
 import { WorkspaceProvider } from '@/components/dashboard/workspace';
 import '@/components/dashboard/dashboard.css';
 
@@ -17,20 +15,6 @@ export default async function Layout({
 }: {
   children: React.ReactNode;
 }) {
-  const configuration = dashboardConfig();
-
-  // Development bypass
-  if (configuration?.bypass) {
-    return (
-      <WorkspaceProvider
-        account="Development Tenant"
-        bypass={true}
-      >
-        {children}
-      </WorkspaceProvider>
-    );
-  }
-
   // Normal Supabase authentication
   const client = await authClient();
 
@@ -38,12 +22,12 @@ export default async function Layout({
     ? (await client.auth.getUser()).data.user
     : null;
 
+  // Redirect jika pengguna belum login
   if (!user) redirect('/login');
 
   return (
     <WorkspaceProvider
       account={user.email ?? 'Akun tenant'}
-      bypass={false}
     >
       {children}
     </WorkspaceProvider>
