@@ -645,7 +645,7 @@ function Shell({
 
           {/* TENANT ROLE */}
 
-          <p className="dash-muted">
+          <p className="dash-muted dash-role-badge">
             {member.role === 'OWNER'
               ? 'Pemilik'
               : 'Staf'}
@@ -682,7 +682,7 @@ function Shell({
           {/* ACCOUNT */}
 
           <div className="dash-account">
-            <span>{account}</span>
+            {bypass ? <span className="dash-env-badge">Development Tenant</span> : <span>{account}</span>}
 
             <Link href="/dashboard/password">
               Ganti kata sandi
